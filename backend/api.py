@@ -1,7 +1,7 @@
 from flask import Flask, request
 app = Flask(__name__)
 
-from . import authentication
+from backend import authentication
 
 @app.route("/api")
 def hello():
@@ -9,7 +9,7 @@ def hello():
 
 
 @app.route('/api/authenticate', methods=['POST'])
-def add_message(uuid):
+def add_message():
 
     token = request.headers["X-AUTH"] or None
     if token:
