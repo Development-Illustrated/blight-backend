@@ -14,5 +14,5 @@ def add_message(uuid):
 
 
 if __name__ == '__main__':
-    app.run('172.31.13.62', 5000)
+    app.run('35.177.182.18', 5000)
 
