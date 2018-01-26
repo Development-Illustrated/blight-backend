@@ -11,9 +11,9 @@ def hello():
 @app.route('/api/authenticate', methods=['POST'])
 def add_message():
     try:
-        token = request.headers["X-AUTH"] or None
+        token = request.headers["X-AUTH"]
     except KeyError:
-        pass
+        token = None
 
     if token:
         authenticated = authentication.authenticate_token(token)
