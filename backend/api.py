@@ -21,7 +21,10 @@ def add_message():
         password=content["password"]
         authenticated = authentication.authenticate(username, password)
 
-    return authenticated
+    if authenticated:
+        return 200
+    else:
+        return "You suck, get lost!"
 
 
 
