@@ -1,7 +1,7 @@
 from flask import Flask, request
 app = Flask(__name__)
 
-from backend import authentication
+from . import authentication
 
 @app.route("/api")
 def hello():
