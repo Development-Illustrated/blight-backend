@@ -1,8 +1,17 @@
-from flask import Flask, request, Response
+from flask import Flask, request, Response, jsonify
 app = Flask(__name__)
-
+import json
+from bson import ObjectId
 from backend import authentication
 from backend.landmarks import landmark_manager
+
+class JSONEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, ObjectId):
+            return str(o)
+        return json.JSONEncoder.default(self, o)
+
+
 @app.route("/api")
 def hello():
     return "Hello GGJ2018!"
@@ -27,7 +36,7 @@ def authenticate():
             return "No content, send me something fool!"
 
     if token:
-        return Response({"key":authenticated}, status=200, mimetype='application/json')
+        return Response(json.dumps({"key":token}), status=200, mimetype='application/json')
     else:
         return Response(status=401)
 
@@ -35,9 +44,9 @@ def authenticate():
 @app.route('/api/landmarks', methods=['GET'])
 def get_landmarks():
     if not authentication.authenticate_token(request):
-        return Response(status=401)
+        return Response("Unauthorised access", status=401)
 
-    return landmark_manager.get_landmarks()
+    return Response(JSONEncoder().encode(landmark_manager.get_landmarks()), status=200, mimetype='application/json')
 
 
 

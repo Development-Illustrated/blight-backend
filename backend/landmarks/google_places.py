@@ -6,12 +6,14 @@ db = MongoClient().get_database("blight")
 
 def parse_location(local):
     name = local["name"]
-    latlong = str(local["geometry"]["location"]["lat"]) + ',' + str(local["geometry"]["location"]["lng"])
+    lat = str(local["geometry"]["location"]["lat"])
+    lng = str(local["geometry"]["location"]["lng"])
     icon = local["icon"]
 
     retjson = {
         "name":name,
-        "coords":latlong,
+        "lat":lat,
+        "lng":lng,
         "icon":icon,
         "ownershipTeam":None,
         "inventoryItems":[],

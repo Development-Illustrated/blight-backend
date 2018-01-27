@@ -17,7 +17,7 @@ def authenticate_token(req):
     token = db.tokens.find({"token":token}).count()
 
     if token:
-        return True
+        return token
     else:
         return False
 
