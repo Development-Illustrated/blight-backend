@@ -4,12 +4,14 @@ import json
 from bson import ObjectId
 from backend import authentication
 from backend.landmarks import landmark_manager
+from backend.user import user_info
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, ObjectId):
             return str(o)
         return json.JSONEncoder.default(self, o)
+
 
 
 @app.route("/api")
@@ -47,6 +49,14 @@ def get_landmarks():
         return Response("Unauthorised access", status=401)
 
     return Response(JSONEncoder().encode(landmark_manager.get_landmarks()), status=200, mimetype='application/json')
+
+
+@app.route('/api/user/get', methods=['GET'])
+def get_user_info():
+    if not authentication.authenticate_token(request):
+        return Response(status=401)
+
+    return user_info.get_user_info()
 
 
 
