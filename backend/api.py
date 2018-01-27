@@ -1,11 +1,23 @@
 from flask import Flask, request, Response, jsonify
-app = Flask(__name__)
 import json
 from bson import ObjectId
+
+# Setup logger
+from backend.tools import log
+logger = log.setup_custom_logger('blight')
+logger.debug('Initialising server')
+logger.info('Initialising server')
+
+
+
 from backend import authentication
 from backend.landmarks import landmark_manager
 from backend.landmarks.landmark import Landmark
 from backend.landmarks import google_places
+
+
+app = Flask(__name__)
+
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
@@ -61,11 +73,6 @@ def refresh_landmarks():
     google_places.find_places()
 
 
-
-
-
-
-
 @app.route('/api/landmarks/add_virion', methods=['PUT'])
 def landmarks_add_virion():
     # if not authentication.authenticate_token(request):
@@ -77,8 +84,6 @@ def landmarks_add_virion():
         quantity = content["quantity"]
 
     ldm = Landmark(name)
-
-
 
     return Response(JSONEncoder().encode(landmark_manager.get_landmarks()), status=200, mimetype='application/json')
 
@@ -98,5 +103,6 @@ def get_user_info():
 
 
 if __name__ == '__main__':
+
     app.run('0.0.0.0', 5000)
 
