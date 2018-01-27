@@ -20,7 +20,8 @@ def parse_location(local):
         "inventoryItems":[],
         "scheme": "",
         "status":"",
-        "degradeRate":5
+        "degradeRate":5,
+        "range":100
 
     }
     return retjson

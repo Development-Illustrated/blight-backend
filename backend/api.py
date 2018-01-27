@@ -4,8 +4,8 @@ import json
 from bson import ObjectId
 from backend import authentication
 from backend.landmarks import landmark_manager
-from backend.user import user_info
 from backend.landmarks.landmark import Landmark
+from backend.landmarks import google_places
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
@@ -46,15 +46,30 @@ def authenticate():
 
 @app.route('/api/landmarks', methods=['GET'])
 def get_landmarks():
-    if not authentication.authenticate_token(request):
-        return Response("Unauthorised access", status=401)
+    # if not authentication.authenticate_token(request):
+    #     return Response("Unauthorised access", status=401)
 
     return Response(JSONEncoder().encode(landmark_manager.get_landmarks()), status=200, mimetype='application/json')
 
+
+
+@app.route('/api/landmarks/refreshdb', methods=['GET'])
+def refresh_landmarks():
+    # if not authentication.authenticate_token(request):
+    #     return Response("Unauthorised access", status=401)
+
+    google_places.find_places()
+
+
+
+
+
+
+
 @app.route('/api/landmarks/add_virion', methods=['PUT'])
 def landmarks_add_virion():
-    if not authentication.authenticate_token(request):
-        return Response("Unauthorised access", status=401)
+    # if not authentication.authenticate_token(request):
+    #     return Response("Unauthorised access", status=401)
 
     content = request.json
     if content:
