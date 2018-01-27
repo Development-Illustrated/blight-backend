@@ -8,7 +8,6 @@ class Landmark(object):
     def __init__(self, name):
 
         self.logger = logging.getLogger('blight')
-        self.logger.info('Instantiating landmark object for ' + str(name))
 
         self.db = MongoClient().get_database("blight")
         doc = self.db.landmarks.find_one({"name": name})
@@ -17,7 +16,7 @@ class Landmark(object):
             return
 
         try:
-            self.id = str(doc["id"])
+            self.id = str(doc["_id"])
             self.name = name
             self.resources = doc["virion"]
             self.max = doc["max"]
@@ -29,8 +28,8 @@ class Landmark(object):
             self.team = doc["team"]
             self.range = doc["range"]
 
-        except KeyError:
-            self.logger.critical("landmark: Couldn't find all required keys!")
+        except KeyError as e:
+            self.logger.critical("landmark: Couldn't find all required keys!", e)
 
 
     def add_item(self, item, user):
@@ -49,37 +48,41 @@ class Landmark(object):
         self.logger.info("Item added to landmark inventory")
 
     def check_faction(self):
-        old_team = self.team
-        if self.resources in range(self.nmax, self.max):
-            self.team = 'virus'
-        elif self.resources in range(self.nmin, self.min):
-            self.team = 'bacteria'
-        else:
-            self.team = 'neutral'
 
-        if self.team is not old_team:
-            self.logger.info(self.name + " has changed teams to  " + self.team)
+        if self.resources in range(self.nmax, self.max):
+            new_team = 'virus'
+        elif self.resources in range(self.nmin, self.min):
+            new_team = self.team = 'bacteria'
+        else:
+            new_team = 'neutral'
+
+        if self.team != new_team:
+            self.team = new_team
+            self.logger.debug(self.name + " has changed teams to  " + new_team)
+            self.db.landmarks.update_one({"name":self.name},{"$set": {"team":self.team}})
+
         return
 
-    def add_virion(self, quantity, user):
+    def add_virion(self, quantity):
 
         # TODO check user is within range of the landmark before updating
         # if not geo_tools.within_range([123,123], [123,123],500):
         #     return False
 
-        if user.resource < quantity:
-            self.logger.warning("User's resource isn't sufficient for request.")
-            return False
+        # if user.resource < quantity:
+        #     self.logger.warning("User's resource isn't sufficient for request.")
+        #     return False
 
         new_quant = self.resources + quantity
 
-        self.db.landmarks.update({ "_id":self.id },
+        self.db.landmarks.update_one({ "name":self.name },
         { "$set":
             {
             "virion": new_quant
             }
         })
-        self.logger.info("Updated mongo with new quantity")
+
+        self.logger.info("Updated mongo with new quantity: "+str(new_quant))
 
         # TODO if neutral
             # Change faction
