@@ -20,14 +20,19 @@ def add_message():
     else:
         content = request.json
         print(content)
-        username=content["username"]
-        password=content["password"]
-        authenticated = authentication.authenticate(username, password)
+        if content:
+            username=content["username"]
+            password=content["password"]
+            authenticated = authentication.authenticate(username, password)
+
+        else:
+            return "No content, send me something fool!"
 
     if authenticated:
-        return 200
+        return authenticated
     else:
         return "You suck, get lost!"
+
 
 
 
