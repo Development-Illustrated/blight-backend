@@ -5,6 +5,7 @@ from bson import ObjectId
 from backend import authentication
 from backend.landmarks import landmark_manager
 from backend.user import user_info
+from backend.landmarks.landmark import Landmark
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
@@ -50,6 +51,22 @@ def get_landmarks():
 
     return Response(JSONEncoder().encode(landmark_manager.get_landmarks()), status=200, mimetype='application/json')
 
+@app.route('/api/landmarks/add_virion', methods=['PUT'])
+def landmarks_add_virion():
+    if not authentication.authenticate_token(request):
+        return Response("Unauthorised access", status=401)
+
+    content = request.json
+    if content:
+        name = content["name"]
+        quantity = content["quantity"]
+
+    ldm = Landmark(name)
+
+
+
+    return Response(JSONEncoder().encode(landmark_manager.get_landmarks()), status=200, mimetype='application/json')
+
 
 @app.route('/api/user/get', methods=['GET'])
 def get_user_info():
@@ -57,6 +74,7 @@ def get_user_info():
         return Response(status=401)
 
     return user_info.get_user_info()
+
 
 
 

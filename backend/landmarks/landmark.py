@@ -1,6 +1,4 @@
-import time
 from pymongo import MongoClient
-from pprint import pprint
 
 # calculate the effect landmarks have on player
 class Landmark(object):
@@ -26,4 +24,11 @@ class Landmark(object):
 
     def captureLandmark(self, resources):
         self.landmarkResources = resources
+
+
+    def add_virion(self, quantity):
+        if self.within_range([123,123]):
+
+
+
 
