@@ -71,6 +71,8 @@ def refresh_landmarks():
     #     return Response("Unauthorised access", status=401)
 
     google_places.find_places()
+    return Response(status=200)
+
 
 
 @app.route('/api/landmarks/add_virion', methods=['PUT'])

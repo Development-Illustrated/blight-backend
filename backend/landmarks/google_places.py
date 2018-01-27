@@ -1,5 +1,7 @@
 import requests
 from pymongo import MongoClient
+from time import sleep
+
 
 apikey = "AIzaSyDZEOKPfu1-yvYeSSuT8-cpDgnAKTtjKLk"
 db = MongoClient().get_database("blight")
@@ -31,15 +33,22 @@ def parse_location(local):
 
 
 def find_places(location = '51.481581,-3.179090', radius=500):
-    params = {'location': location, "radius": radius, "type": "points_of_interest", "key": apikey}
-    resp = requests.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json', params=params)
-    print("Querying google api for places.. \nRequest:" + resp.url)
 
-    data = resp.json()["results"]
+    page_token = None
 
-    for local in data:
-        deets = parse_location(local)
-        store_in_db(deets)
+    while True:
+        params = {'location': location, "radius": radius, "type": "points_of_interest", "key": apikey, "page_token":page_token}
+        resp = requests.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json', params=params)
+        print("Querying google api for places.. \nRequest:" + resp.url)
+
+        data = resp.json()["results"]
+        page_token = resp.json()["next_page_token"]
+        logger.debug(page_token)
+        for local in data:
+            deets = parse_location(local)
+            store_in_db(deets)
+
+        sleep(2)
 
 
 def store_in_db(local):
