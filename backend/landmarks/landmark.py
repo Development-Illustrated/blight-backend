@@ -4,7 +4,6 @@ import logging
 
 # calculate the effect landmarks have on player
 class Landmark(object):
-    landmarkBaseMod = 0.5
 
     def __init__(self, name):
 
@@ -21,20 +20,46 @@ class Landmark(object):
             self.id = str(doc["id"])
             self.name = name
             self.resources = doc["virion"]
+            self.max = doc["max"]
+            self.min = doc["min"]
+            self.nmax = doc["neutral_max"]
+            self.nmin = doc["neutral_min"]
             self.items = doc["inventoryItems"]
+            self.max_items = doc["max_inventory"]
             self.team = doc["team"]
             self.range = doc["range"]
 
         except KeyError:
-            self.logger.warning("landmark: Couldn't find all required keys!")
-            return
+            self.logger.critical("landmark: Couldn't find all required keys!")
 
-    def addItem(self, item):
+
+    def add_item(self, item, user):
+
+        # TODO Check user is within range of the landmark
+
+        if item not in user.items:
+            self.logger.warning("User doesnt have the item the want to transfer.")
+            return False
+
+        if len(self.items) < self.max_items:
+            self.logger.warning("Landmark doesn't have room for more items")
+            return False
+
         self.items.append(item)
+        self.logger.info("Item added to landmark inventory")
 
-    def captureLandmark(self, resources):
-        self.landmarkResources = resources
+    def check_faction(self):
+        old_team = self.team
+        if self.resources in range(self.nmax, self.max):
+            self.team = 'virus'
+        elif self.resources in range(self.nmin, self.min):
+            self.team = 'bacteria'
+        else:
+            self.team = 'neutral'
 
+        if self.team is not old_team:
+            self.logger.info(self.name + " has changed teams to  " + self.team)
+        return
 
     def add_virion(self, quantity, user):
 
@@ -56,5 +81,10 @@ class Landmark(object):
         })
         self.logger.info("Updated mongo with new quantity")
 
+        # TODO if neutral
+            # Change faction
         return True
+
+
+
 

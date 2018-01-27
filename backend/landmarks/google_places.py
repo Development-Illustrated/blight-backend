@@ -6,8 +6,8 @@ db = MongoClient().get_database("blight")
 
 def parse_location(local):
     name = local["name"]
-    lat = str(local["geometry"]["location"]["lat"])
-    lng = str(local["geometry"]["location"]["lng"])
+    lat = local["geometry"]["location"]["lat"]
+    lng = local["geometry"]["location"]["lng"]
     icon = local["icon"]
 
     retjson = {
@@ -16,13 +16,18 @@ def parse_location(local):
         "lng":lng,
         "icon":icon,
         "virion": 10000,
-        "team":None,
+        "max": 100000000,
+        "min": -100000000,
+        "neutral_max":10000,
+        "neutral_min":-10000,
+        "team":"neutral",
         "inventoryItems":[],
         "scheme": "",
         "status":"",
         "degradeRate":5,
-        "range":100
-
+        "range":100,
+        "max_inventory":9,
+        "base_mod":0.5
     }
     return retjson
 
@@ -39,8 +44,6 @@ def find_places(location = '51.481581,-3.179090', radius=500):
         store_in_db(deets)
 
 
-
-
 def store_in_db(local):
 
     out = db.landmarks.remove({"name":local["name"]})
@@ -51,6 +54,8 @@ def store_in_db(local):
     print("Inserted " + local["name"] + " into landmarks collection")
 
 
+if __name__ == '__main__':
+    find_places()
 
 
 

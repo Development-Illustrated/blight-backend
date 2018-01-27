@@ -9,14 +9,27 @@ def get_landmarks():
     logger.info("Returning landmarks from mongo")
     return landmarks
 
+def get_landmark_names():
+    db = MongoClient().get_database("blight")
+    x = list(db.landmarks.find({},{"name":1}))
+    landmarks = []
+    for i in x:
+        landmarks.append(i["name"])
+
+    return landmarks
+
 def manage():
-    # loop each landmark
-    while True:
+    # check landmark factions
+    for l in get_landmark_names():
+        logger.info("Checking landmark: "+str(l))
+        ldm = Landmark(l)
+        ldm.check_faction()
+
+    return
 
 
 
-
-
-ldm = Landmark("Carphone Warehouse")
-
+print("starting")
+manage()
+print("done")
 
