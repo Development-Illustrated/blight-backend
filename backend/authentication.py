@@ -3,13 +3,21 @@ import uuid
 import time
 from pprint import pprint
 
-def authenticate_token(token):
+def authenticate_token(req):
+
+    authenticated = None
+
+    try:
+        token = req.headers["X-AUTH"]
+    except KeyError:
+        token = None
+        return False
 
     db = MongoClient().get_database("blight")
     token = db.tokens.find({"token":token}).count()
 
     if token:
-        return "200"
+        return True
     else:
         return False
 
