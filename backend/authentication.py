@@ -13,6 +13,7 @@ def authenticate_token(token):
     else:
         return False
 
+
 def authenticate(username, password):
     db = MongoClient().get_database("blight")
 
