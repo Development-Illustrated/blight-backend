@@ -3,9 +3,10 @@ app = Flask(__name__)
 
 from backend import authentication
 from backend.landmarks import landmark_manager
+from backend.user import user_info
 @app.route("/api")
 def hello():
-    return "Hello GGJ2018!"
+    return "Hello GsGJ2018!"
 
 
 @app.route('/api/authenticate', methods=['POST'])
@@ -38,6 +39,14 @@ def get_landmarks():
         return Response(status=401)
 
     return landmark_manager.get_landmarks()
+
+
+@app.route('/api/user/get', methods=['GET'])
+def get_user_info():
+    if not authentication.authenticate_token(request):
+        return Response(status=401)
+
+    return user_info.get_user_info()
 
 
 
