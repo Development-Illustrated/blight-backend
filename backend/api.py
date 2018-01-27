@@ -88,19 +88,48 @@ def landmarks_add_virion():
     return Response(JSONEncoder().encode(landmark_manager.get_landmarks()), status=200, mimetype='application/json')
 
 
-@app.route('/api/user/get', methods=['GET'])
-def get_user_info():
-    if not authentication.authenticate_token(request):
-        return Response(status=401)
+#GET requests return JSON object containing user info
+#POST requests creates a new entry for the new user in the db
+@app.route('/api/user', methods=["GET","POST"])
+def user():
+    error = ''
+    try:
+	
+        if request.method == "POST":
+            userid = request.headers["userid"]
+            content = request.json
+            if userid and content:
+                team=content["team"]
+                response = user_info.create_user_info(userid, team)
+            return str(response)
 
-    return user_info.get_user_info()
+        if request.method == "GET":
+            userid = request.headers["userid"]
+            if userid:
+                info = user_info.get_user_info(userid)
+                return str(info)
+            else:
+                return "No userid provided, send me thats userid!"
 
+    except Exception as e:
+        return "Error! Unable to perform /api/user request"  
 
+#Updates given user's info
+@app.route('/api/user/update', methods=["POST"])
+def updateUser():
+    error = ''
+    try:
+        userid = request.headers["userid"]
+        content = request.json
+        print(userid)
+        print(content)
+        if userid and content:
+            print("Updating user info")
+            response = user_info.update_user_info(userid, content)
+            return str(response)
 
-
-
-
-
+    except Exception as e:
+        return "Error! Unable to perform /api/user/update request" 
 
 if __name__ == '__main__':
 
