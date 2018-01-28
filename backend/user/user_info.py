@@ -75,7 +75,7 @@ def chunks(l, n):
 def store_items_load():
     l = []
     db = MongoClient().get_database("blight")
-    storeMinerItems = db.store.find({"type":"miner"}, { "item": 1, "_id": 0})
+    storeMinerItems = db.store.find({"type":"miner"}, { "name": 1, "_id": 0})
     storeMinerItems = (list(storeMinerItems))
     for itemName in storeMinerItems:
         for key, val in itemName.items():
