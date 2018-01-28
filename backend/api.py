@@ -119,6 +119,22 @@ def updateUser():
     except Exception as e:
         return "Error! Unable to perform /api/user/update request"
 
+#Update given user's virion(balance)
+@app.route('/api/user/update/virion', methods=["POST"])
+def updateVirion():
+    error = ''
+    try:
+        userid = request.headers["userid"]
+        content = request.json
+        virion = content["balance"]
+        if userid and content:
+            print("Updating user virion balance ...")
+            response = user_info.update_user_virion(userid, virion)
+            return Response(JSONEncoder().encode(response), status=200, mimetype='application/json')
+
+    except Exception as e:
+        return "Error! Unable to perform /api/user/update/virion request"
+
 
 #Updates given user's info
 @app.route('/api/store', methods=["GET"])

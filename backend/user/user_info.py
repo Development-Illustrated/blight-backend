@@ -57,6 +57,14 @@ def update_user_info(userid, user_obj):
 # user_obj = {'lastSeen': '123'}
 # print(update_user_info("virusman", user_obj))
 
+def update_user_virion(userid, virion):
+    db = MongoClient().get_database("blight")
+    response = db.users.update_one({"userid":userid}, {"$set": {"balance":virion} })
+    response = db.users.find_one({"userid":userid}, {"balance": 1, "_id": 0})
+    return(response)
+
+# print(update_user_virion("virusman", "5000"))
+
 
 def chunks(l, n):
     """Yield successive n-sized chunks from l."""
