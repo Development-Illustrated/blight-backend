@@ -5,17 +5,14 @@ from bson import ObjectId
 # Setup logger
 from backend.tools import log
 logger = log.setup_custom_logger('blight')
-logger.debug('Initialising server')
 logger.info('Initialising server')
 
 
-
-from backend import authentication
+from backend import old_authentication
 from backend.landmarks import landmark_manager
 from backend.landmarks.landmark import Landmark
 from backend.landmarks import google_places
 from backend.user import user_info
-
 
 app = Flask(__name__)
 
@@ -33,28 +30,28 @@ def hello():
     return "Hello GGJ2018!"
 
 
-@app.route('/api/authenticate', methods=['POST'])
-def authenticate():
-
-    authenticated = authentication.authenticate_token(request)
-    if authenticated:
-       return Response(status="200")
-
-    else:
-        content = request.json
-        print(content)
-        if content:
-            username=content["username"]
-            password=content["password"]
-            token = authentication.authenticate(username, password)
-
-        else:
-            return "No content, send me something fool!"
-
-    if token:
-        return Response(json.dumps({"key":token}), status=200, mimetype='application/json')
-    else:
-        return Response(status=401)
+# @app.route('/api/authenticate', methods=['POST'])
+# def authenticate():
+#
+#     authenticated = old_authentication.authenticate_token(request)
+#     if authenticated:
+#        return Response(status="200")
+#
+#     else:
+#         content = request.json
+#         print(content)
+#         if content:
+#             username=content["username"]
+#             password=content["password"]
+#             token = old_authentication.authenticate(username, password)
+#
+#         else:
+#             return "No content, send me something fool!"
+#
+#     if token:
+#         return Response(json.dumps({"key":token}), status=200, mimetype='application/json')
+#     else:
+#         return Response(status=401)
 
 
 @app.route('/api/landmarks', methods=['GET'])
@@ -66,13 +63,25 @@ def get_landmarks():
 
 
 
-@app.route('/api/landmarks/refreshdb', methods=['GET'])
+@app.route('/api/landmarks/add_landmarks', methods=['POST'])
 def refresh_landmarks():
     # if not authentication.authenticate_token(request):
     #     return Response("Unauthorised access", status=401)
 
-    google_places.find_places()
-    return Response(status=200)
+    content = request.json
+    if not content:
+        return Response("Send me some coords yo", status=400)
+
+    lat = content["lat"]
+    lng = content["lng"]
+
+
+    location = str(lat) + ', ' + str(lng)
+    logger.debug("location: " +location)
+
+    google_places.find_places(location)
+
+    return Response(JSONEncoder().encode(landmark_manager.get_landmarks()), status=200, mimetype='application/json')
 
 
 
@@ -85,6 +94,7 @@ def landmarks_add_virion():
     if content:
         name = content["name"]
         quantity = content["quantity"]
+        landmark = content["landmark"]
 
     ldm = Landmark(name)
 

@@ -2,7 +2,7 @@ import requests
 from pymongo import MongoClient
 from time import sleep
 import logging
-logger = logging.getLogger('blight')
+logger = logging.getLogger("blight")
 
 apikey = "AIzaSyDZEOKPfu1-yvYeSSuT8-cpDgnAKTtjKLk"
 db = MongoClient().get_database("blight")
@@ -33,10 +33,11 @@ def parse_location(local):
     return retjson
 
 
-def find_places(location = '51.481581,-3.179090', radius=1000):
+def find_places(location = '51.481581,-3.179090', radius=500):
 
     page_token = 'stupidtoken'
 
+    logger.debug("location = " + location)
     while page_token:
 
         params = {'location': location, "radius": radius, "type": "points_of_interest", "key": apikey}
@@ -44,8 +45,9 @@ def find_places(location = '51.481581,-3.179090', radius=1000):
             params["pagetoken"] = page_token
 
         resp = requests.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json', params=params)
-        print("Querying google api for places.. \nRequest:" + resp.url)
-
+        logger.info("Querying google api for places.. \nRequest:" + resp.url)
+        logger.debug(resp.status_code
+                     )
         data = resp.json()["results"]
         try:
             page_token = resp.json()["next_page_token"]
@@ -65,10 +67,10 @@ def store_in_db(local):
 
     out = db.landmarks.remove({"name":local["name"]})
     if out["n"]:
-        print("Removed " + local["name"])
+        logger.info("Removed " + local["name"])
 
     db.landmarks.insert(local)
-    print("Inserted " + local["name"] + " into landmarks collection")
+    logger.info("Inserted " + local["name"] + " into landmarks collection")
 
 
 if __name__ == '__main__':

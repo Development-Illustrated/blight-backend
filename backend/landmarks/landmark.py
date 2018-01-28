@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 from backend.tools import geo_tools
 import logging
+logger = logging.getLogger("blight")
 
 # calculate the effect landmarks have on player
 class Landmark(object):

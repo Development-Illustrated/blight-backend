@@ -3,8 +3,8 @@ from backend.landmarks.landmark import Landmark
 import random
 from pprint import pprint
 # Setup logger
-from backend.tools import log
-logger = log.setup_custom_logger('blight')
+import logging
+logger = logging.getLogger("blight")
 
 def get_landmarks():
     db = MongoClient().get_database("blight")
@@ -35,9 +35,4 @@ def manage():
 
     return
 
-
-
-print("starting")
-manage()
-print("done")
 
