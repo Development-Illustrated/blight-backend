@@ -2,22 +2,28 @@ from pymongo import MongoClient
 import time
 import json
 from pprint import pprint
+import logging
+logger = logging.getLogger("blight")
 
 def get_user_info(userid):
     db = MongoClient().get_database("blight")
     userInfo = db.users.find_one({"userid":userid})
-    return userInfo
+    if userInfo:
+        return userInfo
+    else:
+        return False
 
 # print(get_user_info("virusman"))
 
 def create_user_info(userid, team):
     db = MongoClient().get_database("blight")
     userExists = db.users.find({"userid":userid}).count()
-    print(userExists)
     if userExists:
+        logger.warning(userid + " already exists")
         return(get_user_info(userid))
+
     else:
-        print("Creating new user:")
+        logger.info("Creating new user:")
         defBalance="1"
         defMinersActiveInventoryLimit="5"
         defMinersInactiveInventoryLimit="10"
@@ -37,6 +43,8 @@ def create_user_info(userid, team):
             "lastSeen" : lastSeen
         }
         response = db.users.insert(userInfo)
+        logger.info("Response from mongo: " +str(response))
+
         return(get_user_info(userid)) 
 
 # print(create_user_info('virusmansd2', "red"))

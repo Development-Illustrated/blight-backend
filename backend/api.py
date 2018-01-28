@@ -84,26 +84,30 @@ def landmarks_add_virion():
 #POST requests creates a new entry for the new user in the db
 @app.route('/api/user', methods=["GET","POST"])
 def user():
-    try:
-	
-        if request.method == "POST":
-            userid = request.headers["userid"]
-            content = request.json
-            if userid and content:
-                team=content["team"]
-                response = user_info.create_user_info(userid, team)
-            return Response(JSONEncoder().encode(response), status=200, mimetype='application/json')
 
-        if request.method == "GET":
-            userid = request.headers["userid"]
-            if userid:
-                info = user_info.get_user_info(userid)
+
+    if request.method == "POST":
+        userid = request.headers["userid"]
+        content = request.json
+        if userid and content:
+            team=content["team"]
+            response = user_info.create_user_info(userid, team)
+            return Response(JSONEncoder().encode(response), status=200, mimetype='application/json')
+        else:
+            return Response("get me some more shiz", status=200)
+
+    if request.method == "GET":
+        userid = request.headers["userid"]
+        if userid:
+            info = user_info.get_user_info(userid)
+            if info:
                 return Response(JSONEncoder().encode(info), status=200, mimetype='application/json')
             else:
-                return Response("No userid provided, send me thats userid!", status=401)
+                return Response("User doesn't exist", status=401)
+        else:
+            return Response("No user id provided", status=400)
 
-    except Exception as e:
-        return "Error! Unable to perform /api/user request"  
+
 
 #Updates given user's info
 @app.route('/api/user/update', methods=["POST"])
