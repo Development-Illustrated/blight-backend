@@ -1,0 +1,17 @@
+# Atrium Cardiff
+db.landmarks.insert({
+                        "inventoryItems": [],
+                        "name": "ATRiuM Cardiff",
+                        "icon": "https://assets.ifttt.com/images/channels/703096546/icons/on_color_large.png",
+                        "min": -100000000,
+                        "team": "neutral",
+                        "lng": -3.1693625,
+                        "max": 100000000,
+                        "degradeRate": 5,
+                        "lat": 51.4790109,
+                        "neutral_max": 10000,
+                        "range": 100,
+                        "neutral_min": -10000,"base_mod": 0.5,
+                        "virion": 0,
+                        "max_inventory": 9
+                    })

@@ -33,6 +33,17 @@ class Landmark(object):
             self.logger.critical("landmark: Couldn't find all required keys!", e)
 
 
+    def get_settings(self):
+        with open('backend/landmarks/stats.ini', 'r') as f:
+            lines = f.readlines()
+            settings = {}
+            for l in lines:
+                l = l.strip()
+                l = l.strip('\n')
+                settings[l.split('=')[0]] = l.split("=")[1]
+
+        return settings
+
     def add_item(self, item, user):
 
         # TODO Check user is within range of the landmark
@@ -50,17 +61,28 @@ class Landmark(object):
 
     def check_faction(self):
 
-        if self.resources in range(self.nmax, self.max):
+        settings = self.get_settings()
+        # logger.debug("NAME:"+str(self.name))
+        # logger.debug("NMIN:"+str(self.nmin))
+        # logger.debug("NMAX:"+str(self.nmax))
+        # logger.debug("MIN:"+str(self.min))
+        # logger.debug("MAX:"+str(self.max))
+        # logger.debug("resources:"+str(self.resources))
+
+        if self.resources in range(int(self.nmax), int(self.max)):
             new_team = 'virus'
-        elif self.resources in range(self.nmin, self.min):
-            new_team = self.team = 'bacteria'
+            new_image = settings["virusimage"]
+        elif self.resources in range(int(self.min), int(self.nmin)):
+            new_team = 'bacteria'
+            new_image = settings["bacteriaimage"]
         else:
             new_team = 'neutral'
+            new_image = settings["neutralimage"]
 
         if self.team != new_team:
+            self.logger.debug(self.name + " has changed teams from  " +self.team +" to  " + new_team)
             self.team = new_team
-            self.logger.debug(self.name + " has changed teams to  " + new_team)
-            self.db.landmarks.update_one({"name":self.name},{"$set": {"team":self.team}})
+            self.db.landmarks.update_one({"name":self.name},{"$set": {"team":self.team, "icon":new_image}})
 
         return
 
@@ -83,12 +105,4 @@ class Landmark(object):
             }
         })
 
-        self.logger.info("Updated mongo with new quantity: "+str(new_quant))
-
-        # TODO if neutral
-            # Change faction
         return True
-
-
-
-

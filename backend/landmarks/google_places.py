@@ -11,7 +11,7 @@ def parse_location(local):
     name = local["name"]
     lat = local["geometry"]["location"]["lat"]
     lng = local["geometry"]["location"]["lng"]
-    icon = local["icon"]
+    icon = "https://assets.ifttt.com/images/channels/703096546/icons/on_color_large.png"
 
     retjson = {
         "name":name,
