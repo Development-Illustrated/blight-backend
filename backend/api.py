@@ -12,6 +12,9 @@ from backend.landmarks import google_places
 from backend.user import user_info
 from backend.store import store_engine
 
+from backend.tools import admin
+
+
 app = Flask(__name__)
 
 class JSONEncoder(json.JSONEncoder):
@@ -172,6 +175,11 @@ def simulate():
     return Response(status=200)
 
 
-if __name__ == '__main__':
+@app.route('/api/admin/delete_users', methods=["POST"])
+def delete_users():
 
+        admin.del_users()
+        return Response(status=200)
+
+if __name__ == '__main__':
     app.run('0.0.0.0', 5000, use_reloader=False)
