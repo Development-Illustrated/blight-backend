@@ -15,6 +15,7 @@ from backend.landmarks import landmark_manager
 from backend.landmarks.landmark import Landmark
 from backend.landmarks import google_places
 from backend.user import user_info
+from backend.store import store_engine
 
 
 app = Flask(__name__)
@@ -102,13 +103,13 @@ def user():
             if userid and content:
                 team=content["team"]
                 response = user_info.create_user_info(userid, team)
-            return str(response)
+            return Response(JSONEncoder().encode(response), status=200, mimetype='application/json')
 
         if request.method == "GET":
             userid = request.headers["userid"]
             if userid:
                 info = user_info.get_user_info(userid)
-                return str(info)
+                return Response(JSONEncoder().encode(info), status=200, mimetype='application/json')
             else:
                 return "No userid provided, send me thats userid!"
 
@@ -127,10 +128,21 @@ def updateUser():
         if userid and content:
             print("Updating user info")
             response = user_info.update_user_info(userid, content)
-            return str(response)
+            return Response(JSONEncoder().encode(response), status=200, mimetype='application/json')
 
     except Exception as e:
         return "Error! Unable to perform /api/user/update request" 
+
+#Updates given user's info
+@app.route('/api/store', methods=["GET"])
+def getCatalogue():
+    error = ''
+    try:
+        response = store_engine.get_store_catalogue()
+        return Response(JSONEncoder().encode(response), status=200, mimetype='application/json')
+
+    except Exception as e:
+        return "Error! Unable to perform /api/store request" 
 
 if __name__ == '__main__':
 
