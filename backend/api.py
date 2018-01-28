@@ -2,7 +2,6 @@ import json
 from bson import ObjectId
 from flask import Flask, request, Response
 
-
 from backend.tools import log
 logger = log.setup_custom_logger('blight')
 logger.info('Initialising server')
@@ -11,17 +10,15 @@ from backend.landmarks import landmark_manager
 from backend.landmarks.landmark import Landmark
 from backend.landmarks import google_places
 from backend.user import user_info
-#from backend.store import store_engine
+from backend.store import store_engine
 
 app = Flask(__name__)
-
 
 class JSONEncoder(json.JSONEncoder):
     def default(self, o):
         if isinstance(o, ObjectId):
             return str(o)
         return json.JSONEncoder.default(self, o)
-
 
 
 @app.route("/api")
@@ -58,8 +55,7 @@ def refresh_landmarks():
     return Response(JSONEncoder().encode(landmark_manager.get_landmarks()), status=200, mimetype='application/json')
 
 
-
-@app.route('/api/landmarks/add_virion', methods=['PUT'])
+@app.route('/api/landmarks/add_virion', methods=['POST'])
 def landmarks_add_virion():
     # if not authentication.authenticate_token(request):
     #     return Response("Unauthorised access", status=401)
@@ -79,12 +75,10 @@ def landmarks_add_virion():
     return Response(JSONEncoder().encode(landmark_manager.get_landmarks()), status=200, mimetype='application/json')
 
 
-
 #GET requests return JSON object containing user info
 #POST requests creates a new entry for the new user in the db
 @app.route('/api/user', methods=["GET","POST"])
 def user():
-
 
     if request.method == "POST":
         userid = request.headers["userid"]
@@ -94,7 +88,7 @@ def user():
             response = user_info.create_user_info(userid, team)
             return Response(JSONEncoder().encode(response), status=200, mimetype='application/json')
         else:
-            return Response("get me some more shiz", status=200)
+            return Response("get me some more shiz", status=401)
 
     if request.method == "GET":
         userid = request.headers["userid"]
@@ -106,7 +100,6 @@ def user():
                 return Response("User doesn't exist", status=401)
         else:
             return Response("No user id provided", status=400)
-
 
 
 #Updates given user's info
@@ -126,6 +119,7 @@ def updateUser():
     except Exception as e:
         return "Error! Unable to perform /api/user/update request"
 
+
 #Updates given user's info
 @app.route('/api/store', methods=["GET"])
 def getCatalogue():
@@ -137,6 +131,7 @@ def getCatalogue():
     except Exception as e:
         return "Error! Unable to perform /api/store request"
 
+
 # Simulates users spending resource
 @app.route('/api/simulate', methods=["POST"])
 def simulate():
@@ -147,9 +142,6 @@ def simulate():
     return Response(status=200)
 
 
-
-
 if __name__ == '__main__':
 
     app.run('0.0.0.0', 5000, use_reloader=False)
-
