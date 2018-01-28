@@ -84,7 +84,6 @@ def landmarks_add_virion():
 #POST requests creates a new entry for the new user in the db
 @app.route('/api/user', methods=["GET","POST"])
 def user():
-    error = ''
     try:
 	
         if request.method == "POST":
@@ -101,7 +100,7 @@ def user():
                 info = user_info.get_user_info(userid)
                 return Response(JSONEncoder().encode(info), status=200, mimetype='application/json')
             else:
-                return "No userid provided, send me thats userid!"
+                return Response("No userid provided, send me thats userid!", status=401)
 
     except Exception as e:
         return "Error! Unable to perform /api/user request"  
