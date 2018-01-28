@@ -1,7 +1,8 @@
 import requests
 from pymongo import MongoClient
 from time import sleep
-
+import logging
+logger = logging.getLogger('blight')
 
 apikey = "AIzaSyDZEOKPfu1-yvYeSSuT8-cpDgnAKTtjKLk"
 db = MongoClient().get_database("blight")
@@ -32,17 +33,26 @@ def parse_location(local):
     return retjson
 
 
-def find_places(location = '51.481581,-3.179090', radius=500):
+def find_places(location = '51.481581,-3.179090', radius=1000):
 
-    page_token = None
+    page_token = 'stupidtoken'
 
-    while True:
-        params = {'location': location, "radius": radius, "type": "points_of_interest", "key": apikey, "page_token":page_token}
+    while page_token:
+
+        params = {'location': location, "radius": radius, "type": "points_of_interest", "key": apikey}
+        if page_token != "stupidtoken":
+            params["pagetoken"] = page_token
+
         resp = requests.get('https://maps.googleapis.com/maps/api/place/nearbysearch/json', params=params)
         print("Querying google api for places.. \nRequest:" + resp.url)
 
         data = resp.json()["results"]
-        page_token = resp.json()["next_page_token"]
+        try:
+            page_token = resp.json()["next_page_token"]
+        except KeyError:
+            page_token = False
+            pass
+
         logger.debug(page_token)
         for local in data:
             deets = parse_location(local)
