@@ -14,6 +14,7 @@ from backend import authentication
 from backend.landmarks import landmark_manager
 from backend.landmarks.landmark import Landmark
 from backend.landmarks import google_places
+from backend.user import user_info
 
 
 app = Flask(__name__)
