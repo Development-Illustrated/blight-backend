@@ -28,6 +28,8 @@ class Landmark(object):
             self.max_items = doc["max_inventory"]
             self.team = doc["team"]
             self.range = doc["range"]
+            self.lat = doc["lat"]
+            self.lng = doc["lng"]
 
         except KeyError as e:
             self.logger.critical("landmark: Couldn't find all required keys!", e)

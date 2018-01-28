@@ -8,10 +8,17 @@ from time import sleep
 import logging
 logger = logging.getLogger("blight")
 
-def get_landmarks():
+def get_landmarks(name = None):
     db = MongoClient().get_database("blight")
+    if name:
+        resp = db.landmarks.find_one({"name":name})
+        if resp:
+            return resp
+        else:
+            logger.warning("Couldn't find landmark " +name+" in mongo")
+
     landmarks = list(db.landmarks.find({}))
-    logger.info("Returning landmarks from mongo")
+    logger.info("Returning all landmarks from mongo")
     return landmarks
 
 def get_landmark_names():
@@ -31,7 +38,6 @@ def auto_manage(sleep_time = 0):
         manage()
 
         sleep(sleep_time)
-
 
 
 # Function intended to be looped by seperate thread

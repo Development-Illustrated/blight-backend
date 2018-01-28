@@ -18,7 +18,8 @@ class Player(object):
             self.id = str(doc["id"])
             self.name = doc["username"]
             self.resources = doc["virionBal"]
-            self.position = doc["coords"]
+            self.lat = doc["lat"]
+            self.lng = doc["lng"]
             self.team = doc["team"]
             self.itemResourceRate = doc["minersActiveInventory.miniMiner"]
             self.itemContagion = doc["minersActiveInventory.medMiner"]

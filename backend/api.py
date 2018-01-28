@@ -54,6 +54,22 @@ def refresh_landmarks():
 
     return Response(JSONEncoder().encode(landmark_manager.get_landmarks()), status=200, mimetype='application/json')
 
+@app.route('/api/landmarks/search', methods=['GET'])
+def search_landmarks():
+    # if not authentication.authenticate_token(request):
+    #     return Response("Unauthorised access", status=401)
+
+    content = request.json
+    if not content:
+        return Response("Send me some coords yo", status=400)
+
+    name = content["name"]
+    resp = landmark_manager.get_landmarks(name)
+    if resp:
+        return Response(JSONEncoder().encode(resp), status=200, mimetype='application/json')
+    else:
+        return Response("Couldn't find required info, sorry", status=400, mimetype='application/json')
+
 
 @app.route('/api/landmarks/add_virion', methods=['POST'])
 def landmarks_add_virion():
