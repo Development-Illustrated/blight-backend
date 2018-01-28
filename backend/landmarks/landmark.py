@@ -105,4 +105,6 @@ class Landmark(object):
             }
         })
 
+        self.check_faction()
+
         return True

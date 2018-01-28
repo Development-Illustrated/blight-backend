@@ -26,14 +26,27 @@ def get_landmark_names():
 
     return landmarks
 
+def auto_manage(sleep_time = 0):
+    while True:
+        manage()
+
+        sleep(sleep_time)
+
+
+
+# Function intended to be looped by seperate thread
+# Monitors landmarks statuses and changes if required
 def manage():
 
+    logger.info("Landmark management started")
     # Loop each landmark
     for l in get_landmark_names():
         ldm = Landmark(l)
 
         # Update landmark faction if required
         ldm.check_faction()
+
+    logger.info("Landmark management done")
 
     return
 

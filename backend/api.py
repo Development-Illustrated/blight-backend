@@ -1,14 +1,12 @@
-from flask import Flask, request, Response, jsonify
 import json
 from bson import ObjectId
+from flask import Flask, request, Response
 
-# Setup logger
+
 from backend.tools import log
 logger = log.setup_custom_logger('blight')
 logger.info('Initialising server')
 
-
-from backend import old_authentication
 from backend.landmarks import landmark_manager
 from backend.landmarks.landmark import Landmark
 from backend.landmarks import google_places
@@ -31,37 +29,12 @@ def hello():
     return "Hello GGJ2018!"
 
 
-# @app.route('/api/authenticate', methods=['POST'])
-# def authenticate():
-#
-#     authenticated = old_authentication.authenticate_token(request)
-#     if authenticated:
-#        return Response(status="200")
-#
-#     else:
-#         content = request.json
-#         print(content)
-#         if content:
-#             username=content["username"]
-#             password=content["password"]
-#             token = old_authentication.authenticate(username, password)
-#
-#         else:
-#             return "No content, send me something fool!"
-#
-#     if token:
-#         return Response(json.dumps({"key":token}), status=200, mimetype='application/json')
-#     else:
-#         return Response(status=401)
-
-
 @app.route('/api/landmarks', methods=['GET'])
 def get_landmarks():
     # if not authentication.authenticate_token(request):
     #     return Response("Unauthorised access", status=401)
 
     return Response(JSONEncoder().encode(landmark_manager.get_landmarks()), status=200, mimetype='application/json')
-
 
 
 @app.route('/api/landmarks/add_landmarks', methods=['POST'])
@@ -104,6 +77,7 @@ def landmarks_add_virion():
 
 
     return Response(JSONEncoder().encode(landmark_manager.get_landmarks()), status=200, mimetype='application/json')
+
 
 
 #GET requests return JSON object containing user info
@@ -172,10 +146,7 @@ def simulate():
 
 
 
-
-
-
 if __name__ == '__main__':
 
-    app.run('0.0.0.0', 5000)
+    app.run('0.0.0.0', 5000, use_reloader=False)
 

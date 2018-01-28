@@ -3,6 +3,30 @@ import uuid
 import time
 from pprint import pprint
 
+# @app.route('/api/authenticate', methods=['POST'])
+# def authenticate():
+#
+#     authenticated = old_authentication.authenticate_token(request)
+#     if authenticated:
+#        return Response(status="200")
+#
+#     else:
+#         content = request.json
+#         print(content)
+#         if content:
+#             username=content["username"]
+#             password=content["password"]
+#             token = old_authentication.authenticate(username, password)
+#
+#         else:
+#             return "No content, send me something fool!"
+#
+#     if token:
+#         return Response(json.dumps({"key":token}), status=200, mimetype='application/json')
+#     else:
+#         return Response(status=401)
+
+
 def authenticate_token(req):
 
     authenticated = None

@@ -17,7 +17,7 @@ def create_user_info(userid, team):
         return(get_user_info(userid))
     else:
         print("Creating new user:")
-        defBalance="500"
+        defBalance="1"
         defMinersActiveInventoryLimit="5"
         defMinersInactiveInventoryLimit="10"
         defRadius="100"
