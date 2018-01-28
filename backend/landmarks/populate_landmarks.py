@@ -4,8 +4,21 @@ from time import sleep
 import logging
 logger = logging.getLogger("blight")
 
-apikey = "AIzaSyDZEOKPfu1-yvYeSSuT8-cpDgnAKTtjKLk"
-db = MongoClient().get_database("blight")
+
+def filter():
+    pass
+
+def parse():
+    pass
+
+def get():
+    pass
+
+def insert():
+    apikey = "AIzaSyDZEOKPfu1-yvYeSSuT8-cpDgnAKTtjKLk"
+    db = MongoClient().get_database("blight")
+
+    pass
 
 def parse_location(local):
     name = local["name"]

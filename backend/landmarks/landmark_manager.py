@@ -16,10 +16,13 @@ def get_landmarks(name = None):
             return resp
         else:
             logger.warning("Couldn't find landmark " +name+" in mongo")
+            return None
 
-    landmarks = list(db.landmarks.find({}))
-    logger.info("Returning all landmarks from mongo")
-    return landmarks
+    else:
+
+        landmarks = list(db.landmarks.find({}))
+        logger.info("Returning all landmarks from mongo")
+        return landmarks
 
 def get_landmark_names():
     db = MongoClient().get_database("blight")

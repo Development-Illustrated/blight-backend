@@ -24,7 +24,7 @@ def create_user_info(userid, team):
 
     else:
         logger.info("Creating new user:")
-        defBalance="1"
+        defBalance=1
         defMinersActiveInventoryLimit="5"
         defMinersInactiveInventoryLimit="10"
         defRadius="100"
