@@ -13,7 +13,7 @@ from backend.landmarks import landmark_manager
 from backend.landmarks.landmark import Landmark
 from backend.landmarks import google_places
 from backend.user import user_info
-from backend.store import store_engine
+#from backend.store import store_engine
 
 app = Flask(__name__)
 
@@ -147,7 +147,7 @@ def updateUser():
             return Response(JSONEncoder().encode(response), status=200, mimetype='application/json')
 
     except Exception as e:
-        return "Error! Unable to perform /api/user/update request" 
+        return "Error! Unable to perform /api/user/update request"
 
 #Updates given user's info
 @app.route('/api/store', methods=["GET"])
@@ -158,7 +158,22 @@ def getCatalogue():
         return Response(JSONEncoder().encode(response), status=200, mimetype='application/json')
 
     except Exception as e:
-        return "Error! Unable to perform /api/store request" 
+        return "Error! Unable to perform /api/store request"
+
+# Simulates users spending resource
+@app.route('/api/simulate', methods=["POST"])
+def simulate():
+
+    loops = int(request.args.get("loops"))
+    landmark_manager.simulate(loops)
+
+    return Response(status=200)
+
+
+
+
+
+
 
 if __name__ == '__main__':
 

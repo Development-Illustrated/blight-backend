@@ -2,7 +2,7 @@
 db.landmarks.insert({
                         "inventoryItems": [],
                         "name": "ATRiuM Cardiff",
-                        "icon": "",
+                        "icon": "https://assets.ifttt.com/images/channels/703096546/icons/on_color_large.png",
                         "min": -100000000,
                         "team": "neutral",
                         "lng": -3.1693625,

@@ -2,6 +2,8 @@ from pymongo import MongoClient
 from backend.landmarks.landmark import Landmark
 import random
 from pprint import pprint
+from time import sleep
+
 # Setup logger
 import logging
 logger = logging.getLogger("blight")
@@ -35,4 +37,20 @@ def manage():
 
     return
 
+
+def simulate(loops = 10):
+
+    for i in range(loops):
+        logger.info("Start of simulation loop")
+        logger.info("Adding random relative resources to each landmark")
+        for l in get_landmark_names():
+            ldm = Landmark(l)
+            quant = random.randrange(-10000,10000)
+            ldm.add_virion(quant)
+
+        # Check for any faction changes
+        logger.info("Altering faction state for each landmark")
+        manage()
+        logger.info("End of simulation loop\n")
+        sleep(2)
 
