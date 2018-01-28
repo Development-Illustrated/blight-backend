@@ -91,12 +91,16 @@ def landmarks_add_virion():
     #     return Response("Unauthorised access", status=401)
 
     content = request.json
-    if content:
-        name = content["name"]
-        quantity = content["quantity"]
-        landmark = content["landmark"]
+    if not content:
+        return Response('Send me some stuff', status=400)
 
-    ldm = Landmark(name)
+    name = content["name"]
+    quantity = content["quantity"]
+    landmark = content["landmark"]
+
+    ldm = Landmark(landmark)
+    ldm.add_virion(quantity)
+
 
     return Response(JSONEncoder().encode(landmark_manager.get_landmarks()), status=200, mimetype='application/json')
 
