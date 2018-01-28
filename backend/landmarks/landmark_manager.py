@@ -3,8 +3,8 @@ from backend.landmarks.landmark import Landmark
 import random
 from pprint import pprint
 # Setup logger
-from backend.tools import log
-logger = log.setup_custom_logger('blight')
+import logging
+logger = logging.getLogger("blight")
 
 def get_landmarks():
     db = MongoClient().get_database("blight")
@@ -26,26 +26,13 @@ def get_landmark_names():
 
 def manage():
 
+    # Loop each landmark
+    for l in get_landmark_names():
+        ldm = Landmark(l)
 
-    for i in range(5):
-        # Loop each landmark
-        for l in get_landmark_names():
-            logger.info("Checking landmark: "+str(l))
-
-
-            ldm = Landmark(l)
-            choice = random.choice([-5000, 5000])
-            ldm.add_virion(choice)
-            logger.info(l + " has changed by " + str(choice))
-            ldm.check_faction()
-
-
+        # Update landmark faction if required
+        ldm.check_faction()
 
     return
 
-
-
-print("starting")
-manage()
-print("done")
 
